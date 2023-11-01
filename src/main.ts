@@ -9,5 +9,10 @@ async function bootstrap() {
 
   await app.listen(3000)
   console.log('启动成功，点击 http://localhost:3000/api/v1 访问')
+
+  if (module.hot) {
+    module.hot.accept()
+    module.hot.dispose(() => app.close())
+  }
 }
 bootstrap()

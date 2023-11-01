@@ -43,6 +43,9 @@ devDependencies:
   '@types/supertest':
     specifier: ^2.0.12
     version: registry.npmmirror.com/@types/supertest@2.0.15
+  '@types/webpack-env':
+    specifier: ^1.18.3
+    version: registry.npmmirror.com/@types/webpack-env@1.18.3
   '@typescript-eslint/eslint-plugin':
     specifier: ^6.0.0
     version: registry.npmmirror.com/@typescript-eslint/eslint-plugin@6.9.1(@typescript-eslint/parser@6.9.1)(eslint@8.52.0)(typescript@5.2.2)
@@ -64,6 +67,9 @@ devDependencies:
   prettier:
     specifier: ^3.0.0
     version: registry.npmmirror.com/prettier@3.0.3
+  run-script-webpack-plugin:
+    specifier: ^0.2.0
+    version: registry.npmmirror.com/run-script-webpack-plugin@0.2.0
   source-map-support:
     specifier: ^0.5.21
     version: registry.npmmirror.com/source-map-support@0.5.21
@@ -85,6 +91,12 @@ devDependencies:
   typescript:
     specifier: ^5.1.3
     version: registry.npmmirror.com/typescript@5.2.2
+  webpack:
+    specifier: ^5.89.0
+    version: registry.npmmirror.com/webpack@5.89.0
+  webpack-node-externals:
+    specifier: ^3.0.0
+    version: registry.npmmirror.com/webpack-node-externals@3.0.0
 
 packages:
 
@@ -1512,6 +1524,12 @@ packages:
     version: 2.0.15
     dependencies:
       '@types/superagent': registry.npmmirror.com/@types/superagent@4.1.20
+    dev: true
+
+  registry.npmmirror.com/@types/webpack-env@1.18.3:
+    resolution: {integrity: sha512-v4CH6FLBCftYGFAswDhzFLjKgucXsOkIf5Mzl8ZZhEtC6oye9whFInNPKszNB9AvX7JEZMtpXxWctih6addP+Q==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/@types/webpack-env/-/webpack-env-1.18.3.tgz}
+    name: '@types/webpack-env'
+    version: 1.18.3
     dev: true
 
   registry.npmmirror.com/@types/yargs-parser@21.0.2:
@@ -5680,6 +5698,13 @@ packages:
     version: 1.2.0
     dependencies:
       queue-microtask: registry.npmmirror.com/queue-microtask@1.2.3
+    dev: true
+
+  registry.npmmirror.com/run-script-webpack-plugin@0.2.0:
+    resolution: {integrity: sha512-SVNNq4jxzjfnaW+HkdTlyH1CWwCuSb/weYfic0D7Y/KnhY27YRYkzgybdzTDEPJlpQ73FDCRDbyBFwNsJMmwWQ==, registry: https://registry.npm.taobao.org/, tarball: https://registry.npmmirror.com/run-script-webpack-plugin/-/run-script-webpack-plugin-0.2.0.tgz}
+    name: run-script-webpack-plugin
+    version: 0.2.0
+    engines: {node: '>=14'}
     dev: true
 
   registry.npmmirror.com/rxjs@7.8.1:

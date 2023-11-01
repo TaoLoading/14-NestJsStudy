@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Query } from '@nestjs/common'
+import { Controller, Get, Post, Put, Query } from '@nestjs/common'
 import { UserService } from './user.service'
 
 @Controller('user')
@@ -13,5 +13,10 @@ export class UserController {
   @Post()
   addUser(): any {
     return this.userService.addUser()
+  }
+
+  @Put()
+  modifyUser(@Query('id') id: string): any {
+    return this.userService.getUser(id)
   }
 }

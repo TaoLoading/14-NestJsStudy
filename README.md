@@ -40,8 +40,69 @@ nest g s [name]
 nest g res user
 ```
 
-## 常用方法
+## 热重载
 
-```js
-```
+配置步骤：
 
+1. 安装包
+
+   ```
+   pnpm i --save-dev webpack-node-externals run-script-webpack-plugin webpack
+   pnpm i -D @types/webpack-env
+   ```
+
+2. 根目录创建`webpack-hmr.config.js`文件
+
+   ```js
+   const nodeExternals = require('webpack-node-externals')
+   const { RunScriptWebpackPlugin } = require('run-script-webpack-plugin')
+   
+   module.exports = function (options, webpack) {
+     return {
+       ...options,
+       entry: ['webpack/hot/poll?100', options.entry],
+       externals: [
+         nodeExternals({
+           allowlist: ['webpack/hot/poll?100']
+         })
+       ],
+       plugins: [
+         ...options.plugins,
+         new webpack.HotModuleReplacementPlugin(),
+         new webpack.WatchIgnorePlugin({
+           paths: [/\.js$/, /\.d\.ts$/]
+         }),
+         new RunScriptWebpackPlugin({
+           name: options.output.filename,
+           autoRestart: false
+         })
+       ]
+     }
+   }
+   
+   ```
+
+3. `main.ts`中增加 webpack 相关配置
+
+   ```ts
+   async function bootstrap() {
+     const app = await NestFactory.create(AppModule)
+   
+     // 设置接口前缀
+     app.setGlobalPrefix('api/v1')
+   
+     await app.listen(3000)
+     console.log('启动成功，点击 http://localhost:3000/api/v1 访问')
+   
+     if (module.hot) {
+       module.hot.accept()
+       module.hot.dispose(() => app.close())
+     }
+   }
+   ```
+
+4. 配置启动脚本
+
+   ```
+   "start:dev": "nest build --webpack --webpackPath webpack-hmr.config.js --watch"
+   ```
