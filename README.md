@@ -106,3 +106,7 @@ nest g res user
    ```
    "start:dev": "nest build --webpack --webpackPath webpack-hmr.config.js --watch"
    ```
+
+## 生命周期
+
+![](./src/assets/img/NestJs生命周期.png)
