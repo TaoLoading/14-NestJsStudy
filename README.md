@@ -196,7 +196,7 @@ nest g res user
    }
    ```
 
-6. 补充，在如`const db = this.configService.get('DB')`的语句中，使用枚举变量代替字符串，便于后期修改
+6. 补充 1：在如`const db = this.configService.get('DB')`的语句中，使用枚举变量代替字符串，便于后期修改
 
    1. 创建枚举属性文件（enum/config.enum.ts）并定义属性
 
@@ -213,3 +213,4 @@ nest g res user
       const db = this.configService.get(ConfigEnum.DB)
       ```
 
+7. 补充 2：还可使用`config`包实现省略步骤 3 中指定环境变量文件路径和.env 共享的操作，通过配置相关文件夹，`config`包判断环境自动读取对应的环境变量文件，并自动携带 .env 文件内容
