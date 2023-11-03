@@ -215,11 +215,11 @@ nest g res user
 
 7. 补充 2：还可使用`config`包实现省略步骤 3 中指定环境变量文件路径和 .env 共享的操作，通过配置相关文件夹，`config`包判断环境自动读取对应的环境变量文件，并自动携带 .env 文件内容
 
-## 配置docker，继承ORM并实现程序连接数据库
+## 配置 docker，继承 ORM 并实现程序连接数据库
 
-### 配置docker
+### 配置 docker
 
-1. 安装docker程序和mysql、adminer镜像
+1. 安装 docker 程序和 mysql、adminer 镜像
 
 2. 配置`docker-compose.yml`文件
 
