@@ -1,0 +1,20 @@
+version: '3.1'
+
+services:
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+    ports:
+    # 此处使用了 3307 端口，避免和本机 MySQL 冲突
+      - 3307:3306
+
+  
+  # adminer：简易管理面板
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080

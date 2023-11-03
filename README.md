@@ -213,4 +213,86 @@ nest g res user
       const db = this.configService.get(ConfigEnum.DB)
       ```
 
-7. 补充 2：还可使用`config`包实现省略步骤 3 中指定环境变量文件路径和.env 共享的操作，通过配置相关文件夹，`config`包判断环境自动读取对应的环境变量文件，并自动携带 .env 文件内容
+7. 补充 2：还可使用`config`包实现省略步骤 3 中指定环境变量文件路径和 .env 共享的操作，通过配置相关文件夹，`config`包判断环境自动读取对应的环境变量文件，并自动携带 .env 文件内容
+
+## 配置docker，继承ORM并实现程序连接数据库
+
+### 配置docker
+
+1. 安装docker程序和mysql、adminer镜像
+
+2. 配置`docker-compose.yml`文件
+
+   ```yaml
+   version: '3.1'
+   
+   services:
+     db:
+       image: mysql
+       command: --default-authentication-plugin=mysql_native_password
+       restart: always
+       environment:
+         MYSQL_ROOT_PASSWORD: example
+       ports:
+       # 此处使用了 3307 端口，避免和本机 MySQL 冲突
+         - 3307:3306
+   
+     
+     # adminer：简易管理面板
+     adminer:
+       image: adminer
+       restart: always
+       ports:
+         - 8080:8080
+   ```
+
+### 连接数据库
+
+1. 安装`TypeORM `相关包
+
+   ```
+   pnpm i @nestjs/typeorm typeorm mysql2 -S
+   ```
+
+2. `app.module.ts`中配置`TypeORM `
+
+   ```js
+   @Module({
+     imports: [
+       TypeOrmModule.forRoot({
+         type: 'mysql',
+         host: 'localhost',
+         port: 3307,
+         username: 'root',
+         password: 'example',
+         database: 'testDB',
+         entities: [],
+         synchronize: true
+       })
+     ],
+     controllers: [AppController],
+     providers: [AppService]
+   })
+   ```
+
+
+3. 上述写法可以实现连接数据库，但无法做到不同环境时配置不同的数据库信息，使用`TypeOrmModule.forRootAsync({...})`修改配置，并使用配置的`config.enum.ts`完善代码
+
+   ```js
+   TypeOrmModule.forRootAsync({
+     imports: [ConfigModule],
+     inject: [ConfigService],
+     useFactory: (configService: ConfigService) => ({
+       type: configService.get(ConfigEnum.DB_TYPE),
+       host: configService.get(ConfigEnum.DB_HOST),
+       port: configService.get(ConfigEnum.DB_PORT),
+       username: configService.get(ConfigEnum.DB_USERNAME),
+       password: configService.get(ConfigEnum.DB_PASSWORD),
+       database: configService.get(ConfigEnum.DB_DATABASE),
+       entities: [],
+       synchronize: configService.get(ConfigEnum.DB_SYNC)
+     } as TypeOrmModuleAsyncOptions)
+   })
+   ```
+
+   

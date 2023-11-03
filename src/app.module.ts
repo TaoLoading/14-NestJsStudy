@@ -1,24 +1,38 @@
 import { Module } from '@nestjs/common'
+import { ConfigModule, ConfigService } from '@nestjs/config'
+import { TypeOrmModule, TypeOrmModuleAsyncOptions } from '@nestjs/typeorm'
+import * as dotenv from 'dotenv'
 import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
-import { ConfigModule } from '@nestjs/config'
-import * as dotenv from 'dotenv'
+import { ConfigEnum } from './enum/config.enum'
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`
 
 @Module({
   imports: [
-    // 实现了将.env 文件中的配置与 process.env 相对应，通过 ConfigService 可读取配置
+    // 环境变量相关
     ConfigModule.forRoot({
-      // 表示在全局都可以使用 ConfigService
       isGlobal: true,
-      // 指定加载的环境变量文件路径
       envFilePath,
-      // 将.env 文件的配置信息与其他环境变量文件共享
       load: [() => dotenv.config({ path: '.env' })]
     }),
-    UserModule
+    UserModule,
+    // TypeOrm 相关
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService) => ({
+        type: configService.get(ConfigEnum.DB_TYPE),
+        host: configService.get(ConfigEnum.DB_HOST),
+        port: configService.get(ConfigEnum.DB_PORT),
+        username: configService.get(ConfigEnum.DB_USERNAME),
+        password: configService.get(ConfigEnum.DB_PASSWORD),
+        database: configService.get(ConfigEnum.DB_DATABASE),
+        entities: [],
+        synchronize: configService.get(ConfigEnum.DB_SYNC)
+      } as TypeOrmModuleAsyncOptions)
+    })
   ],
   controllers: [AppController],
   providers: [AppService]
