@@ -8,13 +8,5 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: example
     ports:
-    # 此处使用了 3307 端口，避免和本机 MySQL 冲突
+      # 此处使用了 3307 端口，避免和本机 MySQL 冲突
       - 3307:3306
-
-  
-  # adminer：简易管理面板
-  adminer:
-    image: adminer
-    restart: always
-    ports:
-      - 8080:8080

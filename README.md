@@ -14,15 +14,15 @@ pnpm start
 pnpm start:dev
 ```
 
-## 核心文件
+## 单个模块文件架构
 
 ```
-src
-├── app.controller.ts // 控制器。包含处理请求和响应的代码
-├── app.controller.spec.ts // 针对控制器的单元测试
-├── app.service.ts // 服务。包含业务逻辑代码
-├── app.module.ts // 根模块。将本模块内相关代码（控制器、服务等）组合在一起
-├── main.ts // 应用程序的入口文件。使用核心函数 NestFactory 来创建 Nest 应用程序的实例
+xxx 模块
+├── xxx.controller.ts // 控制器。处理请求和响应
+├── xxx.controller.spec.ts // 针对控制器的单元测试
+├── xxx.service.ts // 服务。接口业务逻辑代码
+├── xxx.entity.ts // 实体。与数据库表或集合对应的对象模型，用于表示数据的结构和关系
+├── xxx.module.ts // 根模块。将本模块内相关代码组合在一起
 ```
 
 ## 常用命令
@@ -234,17 +234,11 @@ nest g res user
        environment:
          MYSQL_ROOT_PASSWORD: example
        ports:
-       # 此处使用了 3307 端口，避免和本机 MySQL 冲突
+         # 此处使用了 3307 端口，避免和本机 MySQL 冲突
          - 3307:3306
-   
-     
-     # adminer：简易管理面板
-     adminer:
-       image: adminer
-       restart: always
-       ports:
-         - 8080:8080
    ```
+
+3. 执行`docker-compose up -d`运行 docker
 
 ### 连接数据库
 
