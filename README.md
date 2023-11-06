@@ -215,7 +215,7 @@ nest g res user
 
 7. 补充 2：还可使用`config`包实现省略步骤 3 中指定环境变量文件路径和 .env 共享的操作，通过配置相关文件夹，`config`包判断环境自动读取对应的环境变量文件，并自动携带 .env 文件内容
 
-## 配置 docker，继承 ORM 并实现程序连接数据库
+## 配置 docker 并操作数据库
 
 ### 配置 docker
 
@@ -240,7 +240,7 @@ nest g res user
 
 3. 执行`docker-compose up -d`运行 docker
 
-### 连接数据库
+### 使用 TypeORM 连接数据库
 
 1. 安装`TypeORM `相关包
 
@@ -289,4 +289,118 @@ nest g res user
    })
    ```
 
-   
+
+### 创建实体
+
+以`user.entity.ts`为例：
+
+1. 创建 User 实体
+
+```ts
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm'
+
+@Entity()
+export class User {
+  @PrimaryGeneratedColumn()
+  id: number
+
+  @Column()
+  username: string
+
+  @Column()
+  password: string
+}
+```
+
+2. 在`app.module.ts`中完善 TypeOrm 配置，引入创建的 User 实体
+
+```ts
+TypeOrmModule.forRootAsync({
+  imports: [ConfigModule],
+  inject: [ConfigService],
+  useFactory: (configService: ConfigService) =>
+    ({
+      type: configService.get(ConfigEnum.DB_TYPE),
+      host: configService.get(ConfigEnum.DB_HOST),
+      port: configService.get(ConfigEnum.DB_PORT),
+      username: configService.get(ConfigEnum.DB_USERNAME),
+      password: configService.get(ConfigEnum.DB_PASSWORD),
+      database: configService.get(ConfigEnum.DB_DATABASE),
+      // 引入创建的实体
+      entities: [User],
+      synchronize: configService.get(ConfigEnum.DB_SYNC)
+    }) as TypeOrmModuleAsyncOptions
+})
+```
+
+3. 运行程序后，数据库中自动创建对应表
+
+### 处理表格关系（使用 TypeORM 实现：1 对 1，1 对多，多对 1）
+
+* 1 对 1。以`profile.entity.ts`为例
+
+  ```ts
+  @Entity()
+  export class Profile {
+    @PrimaryGeneratedColumn()
+    id: number
+  
+    @Column()
+    gender: string
+  
+    @Column()
+    photo: string
+  
+    @Column()
+    address: string
+  
+    @OneToOne(() => User)
+    @JoinColumn() // 指定关联关系中的外键列
+    user: User
+  }
+  ```
+
+* 1 对多。以`user.entity.ts`为例
+
+  ```ts
+  @Entity()
+  export class User {
+    @PrimaryGeneratedColumn()
+    id: number
+  
+    @Column()
+    username: string
+  
+    @Column()
+    password: string
+  
+    @OneToMany(() => Logs, (logs) => logs.user)
+    logs: Logs[]
+  }
+  ```
+
+* 多对 1。以`logs.entity.ts`为例
+
+  ```ts
+  @Entity()
+  export class Logs {
+    @PrimaryGeneratedColumn()
+    id: number
+  
+    @Column()
+    path: string
+  
+    @Column()
+    mathod: string
+  
+    @Column()
+    data: string
+  
+    @Column()
+    result: string
+  
+    @ManyToOne(() => User, (user) => user.logs)
+    user: User
+  }
+  ```
+

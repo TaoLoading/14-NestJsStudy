@@ -6,6 +6,10 @@ import { AppController } from './app.controller'
 import { AppService } from './app.service'
 import { UserModule } from './user/user.module'
 import { ConfigEnum } from './enum/config.enum'
+import { User } from './user/user.entity'
+import { Profile } from './user/profile.entity'
+import { Roles } from './roles/roles.entity'
+import { Logs } from './logs/logs.entity'
 
 const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`
 
@@ -22,16 +26,17 @@ const envFilePath = `.env.${process.env.NODE_ENV || 'development'}`
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (configService: ConfigService) => ({
-        type: configService.get(ConfigEnum.DB_TYPE),
-        host: configService.get(ConfigEnum.DB_HOST),
-        port: configService.get(ConfigEnum.DB_PORT),
-        username: configService.get(ConfigEnum.DB_USERNAME),
-        password: configService.get(ConfigEnum.DB_PASSWORD),
-        database: configService.get(ConfigEnum.DB_DATABASE),
-        entities: [],
-        synchronize: configService.get(ConfigEnum.DB_SYNC)
-      } as TypeOrmModuleAsyncOptions)
+      useFactory: (configService: ConfigService) =>
+        ({
+          type: configService.get(ConfigEnum.DB_TYPE),
+          host: configService.get(ConfigEnum.DB_HOST),
+          port: configService.get(ConfigEnum.DB_PORT),
+          username: configService.get(ConfigEnum.DB_USERNAME),
+          password: configService.get(ConfigEnum.DB_PASSWORD),
+          database: configService.get(ConfigEnum.DB_DATABASE),
+          entities: [User, Profile, Roles, Logs],
+          synchronize: configService.get(ConfigEnum.DB_SYNC)
+        }) as TypeOrmModuleAsyncOptions
     })
   ],
   controllers: [AppController],
