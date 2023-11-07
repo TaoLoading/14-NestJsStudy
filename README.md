@@ -461,7 +461,7 @@ TypeOrmModule.forRootAsync({
      constructor(private userService: UserService) {}
    
      @Get()
-     getUsers(): any {
+     getAllUser(): any {
        return this.userService.searchAllUser()
      }
    
@@ -476,4 +476,37 @@ TypeOrmModule.forRootAsync({
    }
    ```
 
-   
+
+### 聚合查询
+
+* 使用 sql 语句实现
+
+  ```ts
+  // 聚合查询日志
+  searchLogsByGroup(id: number) {
+    // 使用 sql 语句实现
+    return this.logsRepository.query(
+      'SELECT logs.result as result, COUNT(logs.result) as count FROM logs, user where user.id = logs.userId and user.id = 3 GROUP BY logs.result;'
+    )
+  }
+  ```
+
+* 使用 TypeORM 实现
+
+  ```ts
+  // 聚合查询日志
+  searchLogsByGroup(id: number) {
+    // 使用 TypeORM 实现
+    return this.logsRepository
+      .createQueryBuilder('logs')
+      .select('logs.result', 'result')
+      .addSelect('COUNT("logs.result")', 'count')
+      .leftJoinAndSelect('logs.user', 'user')
+      .where('user.id = :id', { id })
+      .groupBy('logs.result')
+      .getRawMany()
+  }
+  ```
+
+
+

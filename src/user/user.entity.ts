@@ -6,8 +6,10 @@ import {
   JoinTable,
   ManyToMany,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn
 } from 'typeorm'
+import { Profile } from './profile.entity'
 
 @Entity()
 export class User {
@@ -26,4 +28,7 @@ export class User {
   @ManyToMany(() => Roles, (roles) => roles.user)
   @JoinTable({ name: 'user_roles' }) // 中间表，多对多关系中必须存在
   roles: Roles[]
+
+  @OneToOne(() => Profile, (profile) => profile.user)
+  profile: Profile
 }
