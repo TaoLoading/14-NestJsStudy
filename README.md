@@ -109,7 +109,7 @@ nest g res user
 
 ## 生命周期
 
-![](./src/assets/img/NestJs生命周期.png)
+![](https://raw.githubusercontent.com/TaoLoading/14-NestJsStudy/main/src/assets/img/NestJs%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F.png)
 
 ## 模块
 
