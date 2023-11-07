@@ -18,7 +18,7 @@ export class Logs {
   @Column()
   method: string
 
-  @Column()
+  @Column({ nullable: true })
   data: string
 
   @Column()
