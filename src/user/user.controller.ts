@@ -12,11 +12,7 @@ export class UserController {
   }
 
   @Post()
-  addUser(): any {
-    const user = {
-      username: 'TaoLoading',
-      password: '123456'
-    } as User
+  addUser(@Query() user: User): any {
     return this.userService.addUser(user)
   }
 }
