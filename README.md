@@ -215,9 +215,7 @@ nest g res user
 
 7. 补充 2：还可使用`config`包实现省略步骤 3 中指定环境变量文件路径和 .env 共享的操作，通过配置相关文件夹，`config`包判断环境自动读取对应的环境变量文件，并自动携带 .env 文件内容
 
-## 配置 docker 并操作数据库
-
-### 配置 docker
+## 配置 docker 
 
 1. 安装 docker 程序和 mysql、adminer 镜像
 
@@ -239,6 +237,8 @@ nest g res user
    ```
 
 3. 执行`docker-compose up -d`运行 docker
+
+## 操作数据库
 
 ### 使用 TypeORM 连接数据库
 
@@ -404,3 +404,76 @@ TypeOrmModule.forRootAsync({
   }
   ```
 
+### 简易 CRUD
+
+以 user 模块为例
+
+1. 在`user.module.ts`中使用`TypeOrmModule.forFeature([User])`来导入 User 实体。这是为了在`user.service.ts`使用 User 实体类和相关仓库
+
+   ```ts
+   @Module({
+     imports: [TypeOrmModule.forFeature([User])],
+     controllers: [UserController],
+     providers: [UserService]
+   })
+   export class UserModule {}
+   ```
+
+2. 在`user.service.ts`和`user.controller.ts`中分别实现逻辑与响应处理
+
+   ```ts
+   // user.service.ts
+   
+   @Injectable()
+   export class UserService {
+     constructor(
+       @InjectRepository(User) private readonly userRepository: Repository<User>
+     ) {}
+   
+     searchAllUser() {
+       return this.userRepository.find()
+     }
+   
+     searchUser(username: string) {
+       return this.userRepository.find({ where: { username: username } })
+     }
+   
+     async addUser(userInfo: User) {
+       const user = await this.userRepository.create(userInfo)
+       return this.userRepository.save(user)
+     }
+   
+     modifyUser(userId: number, userInfo: Partial<User>) {
+       return this.userRepository.update(userId, userInfo)
+     }
+   
+     deleteUser(userId: number) {
+       return this.userRepository.delete(userId)
+     }
+   }
+   ```
+
+   ```ts
+   // user.controller.ts
+   
+   @Controller('user')
+   export class UserController {
+     constructor(private userService: UserService) {}
+   
+     @Get()
+     getUsers(): any {
+       return this.userService.searchAllUser()
+     }
+   
+     @Post()
+     addUser(): any {
+       const user = {
+         username: 'TaoLoading',
+         password: '123456'
+       } as User
+       return this.userService.addUser(user)
+     }
+   }
+   ```
+
+   

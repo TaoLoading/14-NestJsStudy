@@ -1,24 +1,22 @@
 import { Controller, Get, Post, Put, Query } from '@nestjs/common'
 import { UserService } from './user.service'
+import { User } from './user.entity'
 
 @Controller('user')
 export class UserController {
-  constructor(
-    private userService: UserService
-  ) {}
+  constructor(private userService: UserService) {}
 
   @Get()
-  getUser(@Query('id') id: string): any {
-    return this.userService.getUser(id)
+  getUsers(): any {
+    return this.userService.searchAllUser()
   }
 
   @Post()
   addUser(): any {
-    return this.userService.addUser()
-  }
-
-  @Put()
-  modifyUser(@Query('id') id: string): any {
-    return this.userService.getUser(id)
+    const user = {
+      username: 'TaoLoading',
+      password: '123456'
+    } as User
+    return this.userService.addUser(user)
   }
 }
